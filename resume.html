@@ -1,0 +1,164 @@
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Sanu Kewat - Resume</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
+  />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap"
+    rel="stylesheet"
+  />
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      background: white;
+      margin: 0;
+      padding: 0;
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+    }
+    /* A4 size in px at 96dpi: 794px x 1123px */
+    .a4 {
+      width: 794px;
+      min-height: 1123px;
+      margin: 1rem auto;
+      padding: 2rem 3rem;
+      box-shadow: 0 0 10px rgb(0 0 0 / 0.1);
+      background: white;
+      box-sizing: border-box;
+    }
+    @media (max-width: 820px) {
+      .a4 {
+        width: 100% !important;
+        min-height: auto !important;
+        margin: 0;
+        padding: 1.5rem 1.5rem;
+        box-shadow: none;
+      }
+    }
+    @media print {
+      body, .a4 {
+        margin: 0;
+        box-shadow: none;
+        width: 794px;
+        min-height: 1123px;
+        padding: 2rem 3rem;
+        page-break-after: always;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="a4 text-gray-900">
+    <header class="mb-8">
+      <h1 class="text-5xl font-semibold mb-1 leading-tight">Sanu Kewat</h1>
+      <p class="text-xl text-gray-700 mb-2">Computer Science Student</p>
+      <div class="flex flex-wrap gap-4 text-base text-gray-600">
+        <div class="flex items-center gap-2">
+          <i class="fas fa-phone-alt"></i>
+          <span>8103547283</span>
+        </div>
+        <div class="flex items-center gap-2 break-all">
+          <i class="fas fa-envelope"></i>
+          <a href="mailto:sanukewat06012003@gmail.com" class="underline">sanukewat06012003@gmail.com</a>
+        </div>
+        <div class="flex items-center gap-2">
+          <i class="fas fa-map-marker-alt"></i>
+          <span>Krishna City, Jabalpur, India</span>
+        </div>
+      </div>
+      <div class="flex flex-wrap gap-6 mt-3 text-base text-gray-600">
+        <div>
+          <span class="font-semibold">LinkedIn:</span>
+          <a href="https://www.linkedin.com/in/sanu-kewat" target="_blank" rel="noopener noreferrer" class="underline break-all">linkedin.com/in/sanu-kewat</a>
+        </div>
+        <div>
+          <span class="font-semibold">GitHub:</span>
+          <a href="https://github.com/Sanukewat615" target="_blank" rel="noopener noreferrer" class="underline">Sanukewat615</a>
+        </div>
+      </div>
+    </header>
+
+    <section class="mb-8">
+      <h2 class="text-3xl font-semibold border-b-2 border-gray-300 pb-2 mb-4">Summary</h2>
+      <p class="text-lg leading-relaxed whitespace-pre-line">
+        Motivated and passionate B.Tech student specializing in Computer Science and Engineering, actively preparing for internships and job opportunities in the tech industry. Strong interest in web development and software engineering, with hands-on experience in both front-end and back-end projects. Dedicated to continuously improving technical and soft skills.
+      </p>
+    </section>
+
+    <section class="mb-8">
+      <h2 class="text-3xl font-semibold border-b-2 border-gray-300 pb-2 mb-4">Education</h2>
+      <div class="mb-6">
+        <p class="font-semibold text-lg">Bachelor of Technology, Shri Ram Institute of Science &amp; Technology, Jabalpur</p>
+        <p class="text-gray-700 text-base">CGPA: 7.75 (Till 6th Sem) | Duration: Jul 2022 – Jun 2026</p>
+      </div>
+      <div class="mb-6">
+        <p class="font-semibold text-lg">12th, Govt. Excellence School, Jaithari, Dist-Anuppur [M.P]</p>
+        <p class="text-gray-700 text-base">Percentage: 85.8% | Duration: Jun 2021 – May 2022</p>
+      </div>
+      <div>
+        <p class="font-semibold text-lg">10th, Govt. Excellence School, Jaithari, Dist-Anuppur [M.P]</p>
+        <p class="text-gray-700 text-base">Percentage: 94% | Duration: Jun 2019 – Apr 2020</p>
+      </div>
+    </section>
+
+    <section class="mb-8">
+      <h2 class="text-3xl font-semibold border-b-2 border-gray-300 pb-2 mb-4">Certifications</h2>
+      <ul class="list-disc list-inside text-lg space-y-2">
+        <li>Cisco Networking Essentials</li>
+        <li>Cisco Cyber Security Essentials</li>
+        <li>Cisco JavaScript Essentials</li>
+      </ul>
+    </section>
+
+    <section class="mb-8">
+      <h2 class="text-3xl font-semibold border-b-2 border-gray-300 pb-2 mb-4">Projects</h2>
+      <ol class="list-decimal list-inside text-lg space-y-6">
+        <li>
+          <p class="font-semibold mb-1">Weather Forecast Web App</p>
+          <p class="italic mb-1">Technologies: MERN Stack, JavaScript, API Integration</p>
+          <p>Developed a responsive web app to display real-time weather data based on user location. Integrated OpenWeatherMap API for accurate weather updates. Enhanced user experience with dynamic UI using React.</p>
+        </li>
+        <li>
+          <p class="font-semibold mb-1">Notes &amp; Todo Management App</p>
+          <p class="italic mb-1">Technologies: MERN Stack, React, Node.js, MongoDB, HTML, CSS, JavaScript</p>
+          <p>Built a combined CRUD application to manage personal notes and daily tasks efficiently. Implemented search, filter, and user authentication features for easy and secure data retrieval and management. Designed an intuitive interface for seamless task and note handling with persistent storage using MongoDB.</p>
+        </li>
+        <li>
+          <p class="font-semibold mb-1">Personal Portfolio Website</p>
+          <p class="italic mb-1">Technologies: HTML, CSS, JavaScript, React</p>
+          <p>Designed a responsive portfolio to showcase projects and skills. Implemented smooth scrolling, fixed header, and interactive project cards. Optimized UI/UX for better user engagement.</p>
+        </li>
+        <li>
+          <p class="font-semibold mb-1">Scientific Calculator</p>
+          <p class="italic mb-1">Technologies: JavaScript, HTML, CSS</p>
+          <p>Developed a fully functional scientific calculator with advanced mathematical functions including trigonometry, logarithms, and exponentiation. Designed a clean and user-friendly interface optimized for desktop and mobile devices.</p>
+        </li>
+      </ol>
+    </section>
+
+    <section>
+      <h2 class="text-3xl font-semibold border-b-2 border-gray-300 pb-2 mb-4">Skills</h2>
+      <ul class="list-disc list-inside grid grid-cols-1 sm:grid-cols-2 gap-y-2 text-lg">
+        <li>JavaScript</li>
+        <li>Java</li>
+        <li>HTML</li>
+        <li>CSS</li>
+        <li>React.js</li>
+        <li>Node.js</li>
+        <li>MongoDB</li>
+        <li>Git</li>
+        <li>GitHub</li>
+        <li>VS Code</li>
+        <li>Problem Solving</li>
+        <li>Teamwork</li>
+        <li>Communication</li>
+      </ul>
+    </section>
+  </main>
+</body>
+</html>

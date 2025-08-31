@@ -1,0 +1,693 @@
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Scientific Calculator with Theme & Animation</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
+  />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Roboto+Mono&display=swap"
+    rel="stylesheet"
+  />
+  <style>
+    body {
+      font-family: 'Roboto Mono', monospace;
+      transition: background-color 0.5s ease, color 0.5s ease;
+    }
+    .btn-press {
+      animation: pressAnim 0.15s ease forwards;
+    }
+    @keyframes pressAnim {
+      0% {
+        transform: scale(1);
+        box-shadow: 0 4px 0 #00000033;
+      }
+      50% {
+        transform: scale(0.95);
+        box-shadow: 0 2px 0 #00000022;
+      }
+      100% {
+        transform: scale(1);
+        box-shadow: 0 4px 0 #00000033;
+      }
+    }
+    /* Scrollbar for history */
+    .history-scroll::-webkit-scrollbar {
+      width: 6px;
+    }
+    .history-scroll::-webkit-scrollbar-thumb {
+      background-color: #888;
+      border-radius: 3px;
+    }
+    .history-scroll::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    /* Tooltip styling */
+    .tooltip {
+      position: relative;
+      cursor: help;
+    }
+    .tooltip:hover::after,
+    .tooltip:focus::after {
+      content: attr(data-tooltip);
+      position: absolute;
+      bottom: 125%;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(55, 65, 81, 0.9);
+      color: white;
+      padding: 0.25rem 0.5rem;
+      border-radius: 0.25rem;
+      white-space: nowrap;
+      font-size: 0.75rem;
+      z-index: 10;
+      opacity: 1;
+      pointer-events: none;
+      transition: opacity 0.2s ease-in-out;
+    }
+    .tooltip::after {
+      opacity: 0;
+      pointer-events: none;
+    }
+  </style>
+</head>
+<body class="bg-gray-100 text-gray-900 dark:bg-gray-900 dark:text-gray-100 transition-colors duration-500">
+  <div class="min-h-screen flex flex-col items-center justify-center p-4">
+    <div class="w-full max-w-md bg-white dark:bg-gray-800 rounded-3xl shadow-2xl p-6 flex flex-col">
+      <div class="flex justify-between items-center mb-4">
+        <h1 class="text-3xl font-bold select-none">Scientific Calculator</h1>
+        <button
+          id="themeToggle"
+          aria-label="Toggle Theme"
+          class="text-yellow-400 dark:text-yellow-300 text-2xl focus:outline-none"
+          title="Toggle Light/Dark Theme"
+        >
+          <i class="fas fa-sun"></i>
+        </button>
+      </div>
+      <div
+        id="display"
+        class="bg-gray-200 dark:bg-gray-700 rounded-xl p-4 min-h-[72px] text-right text-3xl font-semibold break-words select-text"
+        aria-live="polite"
+        aria-atomic="true"
+      >
+        0
+      </div>
+      <div
+        id="result"
+        class="text-right text-lg text-gray-600 dark:text-gray-300 min-h-[24px] mt-1 select-text"
+        aria-live="polite"
+        aria-atomic="true"
+      ></div>
+
+      <div class="mt-6 grid grid-cols-6 gap-3">
+        <!-- Row 1 -->
+        <button
+          class="btn btn-function text-blue-600 dark:text-blue-400 font-semibold rounded-lg py-2 shadow-md bg-blue-100 dark:bg-blue-900 hover:bg-blue-200 dark:hover:bg-blue-800 transition tooltip"
+          data-action="clear"
+          aria-label="Clear All"
+          data-tooltip="Clear all input"
+        >
+          AC
+        </button>
+        <button
+          class="btn btn-function text-blue-600 dark:text-blue-400 font-semibold rounded-lg py-2 shadow-md bg-blue-100 dark:bg-blue-900 hover:bg-blue-200 dark:hover:bg-blue-800 transition tooltip"
+          data-action="backspace"
+          aria-label="Backspace"
+          data-tooltip="Delete last character"
+        >
+          <i class="fas fa-backspace"></i>
+        </button>
+        <button
+          class="btn btn-function text-blue-600 dark:text-blue-400 font-semibold rounded-lg py-2 shadow-md bg-blue-100 dark:bg-blue-900 hover:bg-blue-200 dark:hover:bg-blue-800 transition tooltip"
+          data-value="("
+          aria-label="Open Parenthesis"
+          data-tooltip="Open parenthesis"
+        >
+          (
+        </button>
+        <button
+          class="btn btn-function text-blue-600 dark:text-blue-400 font-semibold rounded-lg py-2 shadow-md bg-blue-100 dark:bg-blue-900 hover:bg-blue-200 dark:hover:bg-blue-800 transition tooltip"
+          data-value=")"
+          aria-label="Close Parenthesis"
+          data-tooltip="Close parenthesis"
+        >
+          )
+        </button>
+        <button
+          class="btn btn-function text-blue-600 dark:text-blue-400 font-semibold rounded-lg py-2 shadow-md bg-blue-100 dark:bg-blue-900 hover:bg-blue-200 dark:hover:bg-blue-800 transition tooltip"
+          data-value="^"
+          aria-label="Exponent"
+          title="Exponent (Power)"
+          data-tooltip="Exponentiation (power)"
+        >
+          ^
+        </button>
+        <button
+          class="btn btn-operator text-red-600 dark:text-red-400 font-semibold rounded-lg py-2 shadow-md bg-red-100 dark:bg-red-900 hover:bg-red-200 dark:hover:bg-red-800 transition tooltip"
+          data-value="/"
+          aria-label="Divide"
+          data-tooltip="Divide"
+        >
+          &divide;
+        </button>
+
+        <!-- Row 2 -->
+        <button
+          class="btn btn-function text-green-600 dark:text-green-400 font-semibold rounded-lg py-2 shadow-md bg-green-100 dark:bg-green-900 hover:bg-green-200 dark:hover:bg-green-800 transition tooltip"
+          data-value="sin("
+          aria-label="Sine function"
+          title="Sine"
+          data-tooltip="Sine function"
+        >
+          sin
+        </button>
+        <button
+          class="btn btn-function text-green-600 dark:text-green-400 font-semibold rounded-lg py-2 shadow-md bg-green-100 dark:bg-green-900 hover:bg-green-200 dark:hover:bg-green-800 transition tooltip"
+          data-value="cos("
+          aria-label="Cosine function"
+          title="Cosine"
+          data-tooltip="Cosine function"
+        >
+          cos
+        </button>
+        <button
+          class="btn btn-function text-green-600 dark:text-green-400 font-semibold rounded-lg py-2 shadow-md bg-green-100 dark:bg-green-900 hover:bg-green-200 dark:hover:bg-green-800 transition tooltip"
+          data-value="tan("
+          aria-label="Tangent function"
+          title="Tangent"
+          data-tooltip="Tangent function"
+        >
+          tan
+        </button>
+        <button
+          class="btn btn-function text-green-600 dark:text-green-400 font-semibold rounded-lg py-2 shadow-md bg-green-100 dark:bg-green-900 hover:bg-green-200 dark:hover:bg-green-800 transition tooltip"
+          data-value="log10("
+          aria-label="Log base 10 function"
+          title="Log base 10"
+          data-tooltip="Logarithm base 10"
+        >
+          log
+        </button>
+        <button
+          class="btn btn-function text-green-600 dark:text-green-400 font-semibold rounded-lg py-2 shadow-md bg-green-100 dark:bg-green-900 hover:bg-green-200 dark:hover:bg-green-800 transition tooltip"
+          data-value="ln("
+          aria-label="Natural logarithm function"
+          title="Natural Logarithm"
+          data-tooltip="Natural logarithm"
+        >
+          ln
+        </button>
+        <button
+          class="btn btn-operator text-red-600 dark:text-red-400 font-semibold rounded-lg py-2 shadow-md bg-red-100 dark:bg-red-900 hover:bg-red-200 dark:hover:bg-red-800 transition tooltip"
+          data-value="*"
+          aria-label="Multiply"
+          data-tooltip="Multiply"
+        >
+          &times;
+        </button>
+
+        <!-- Row 3 -->
+        <button
+          class="btn btn-function text-purple-600 dark:text-purple-400 font-semibold rounded-lg py-2 shadow-md bg-purple-100 dark:bg-purple-900 hover:bg-purple-200 dark:hover:bg-purple-800 transition tooltip"
+          data-value="sqrt("
+          aria-label="Square root function"
+          title="Square Root"
+          data-tooltip="Square root"
+        >
+          &radic;
+        </button>
+        <button
+          class="btn btn-function text-purple-600 dark:text-purple-400 font-semibold rounded-lg py-2 shadow-md bg-purple-100 dark:bg-purple-900 hover:bg-purple-200 dark:hover:bg-purple-800 transition tooltip"
+          data-value="abs("
+          aria-label="Absolute value function"
+          title="Absolute Value"
+          data-tooltip="Absolute value"
+        >
+          |x|
+        </button>
+        <button
+          class="btn btn-function text-purple-600 dark:text-purple-400 font-semibold rounded-lg py-2 shadow-md bg-purple-100 dark:bg-purple-900 hover:bg-purple-200 dark:hover:bg-purple-800 transition tooltip"
+          data-value="exp("
+          aria-label="Exponential function"
+          title="Exponential"
+          data-tooltip="Exponential function"
+        >
+          exp
+        </button>
+        <button
+          class="btn btn-function text-purple-600 dark:text-purple-400 font-semibold rounded-lg py-2 shadow-md bg-purple-100 dark:bg-purple-900 hover:bg-purple-200 dark:hover:bg-purple-800 transition tooltip"
+          data-value="pi"
+          aria-label="Pi constant"
+          title="Pi (π)"
+          data-tooltip="Pi constant (3.14159...)"
+        >
+          &pi;
+        </button>
+        <button
+          class="btn btn-function text-purple-600 dark:text-purple-400 font-semibold rounded-lg py-2 shadow-md bg-purple-100 dark:bg-purple-900 hover:bg-purple-200 dark:hover:bg-purple-800 transition tooltip"
+          data-value="e"
+          aria-label="Euler's number"
+          title="Euler's Number (e)"
+          data-tooltip="Euler's number (2.71828...)"
+        >
+          e
+        </button>
+        <button
+          class="btn btn-operator text-red-600 dark:text-red-400 font-semibold rounded-lg py-2 shadow-md bg-red-100 dark:bg-red-900 hover:bg-red-200 dark:hover:bg-red-800 transition tooltip"
+          data-value="-"
+          aria-label="Subtract"
+          data-tooltip="Subtract"
+        >
+          &minus;
+        </button>
+
+        <!-- Row 4 -->
+        <button
+          class="btn btn-number rounded-lg py-2 shadow-md bg-gray-300 dark:bg-gray-700 hover:bg-gray-400 dark:hover:bg-gray-600 transition font-semibold tooltip"
+          data-value="7"
+          aria-label="Number 7"
+          data-tooltip="Number 7"
+        >
+          7
+        </button>
+        <button
+          class="btn btn-number rounded-lg py-2 shadow-md bg-gray-300 dark:bg-gray-700 hover:bg-gray-400 dark:hover:bg-gray-600 transition font-semibold tooltip"
+          data-value="8"
+          aria-label="Number 8"
+          data-tooltip="Number 8"
+        >
+          8
+        </button>
+        <button
+          class="btn btn-number rounded-lg py-2 shadow-md bg-gray-300 dark:bg-gray-700 hover:bg-gray-400 dark:hover:bg-gray-600 transition font-semibold tooltip"
+          data-value="9"
+          aria-label="Number 9"
+          data-tooltip="Number 9"
+        >
+          9
+        </button>
+        <button
+          class="btn btn-function rounded-lg py-2 shadow-md bg-gray-300 dark:bg-gray-700 hover:bg-gray-400 dark:hover:bg-gray-600 transition font-semibold"
+          data-value="Ans"
+          aria-label="Previous answer"
+          style="visibility: hidden;"
+        >
+          Ans
+        </button>
+        <button
+          class="btn btn-function rounded-lg py-2 shadow-md bg-gray-300 dark:bg-gray-700 hover:bg-gray-400 dark:hover:bg-gray-600 transition font-semibold"
+          data-value="."
+          aria-label="Decimal point"
+          data-tooltip="Decimal point"
+        >
+          .
+        </button>
+        <button
+          class="btn btn-operator text-red-600 dark:text-red-400 font-semibold rounded-lg py-2 shadow-md bg-red-100 dark:bg-red-900 hover:bg-red-200 dark:hover:bg-red-800 transition tooltip"
+          data-value="+"
+          aria-label="Add"
+          data-tooltip="Add"
+        >
+          +
+        </button>
+
+        <!-- Row 5 -->
+        <button
+          class="btn btn-number rounded-lg py-2 shadow-md bg-gray-300 dark:bg-gray-700 hover:bg-gray-400 dark:hover:bg-gray-600 transition font-semibold tooltip"
+          data-value="4"
+          aria-label="Number 4"
+          data-tooltip="Number 4"
+        >
+          4
+        </button>
+        <button
+          class="btn btn-number rounded-lg py-2 shadow-md bg-gray-300 dark:bg-gray-700 hover:bg-gray-400 dark:hover:bg-gray-600 transition font-semibold tooltip"
+          data-value="5"
+          aria-label="Number 5"
+          data-tooltip="Number 5"
+        >
+          5
+        </button>
+        <button
+          class="btn btn-number rounded-lg py-2 shadow-md bg-gray-300 dark:bg-gray-700 hover:bg-gray-400 dark:hover:bg-gray-600 transition font-semibold tooltip"
+          data-value="6"
+          aria-label="Number 6"
+          data-tooltip="Number 6"
+        >
+          6
+        </button>
+        <button
+          class="btn btn-function rounded-lg py-2 shadow-md bg-gray-300 dark:bg-gray-700 hover:bg-gray-400 dark:hover:bg-gray-600 transition font-semibold"
+          data-value="Ans"
+          aria-label="Previous answer"
+          style="visibility: hidden;"
+        >
+          Ans
+        </button>
+        <button
+          class="btn btn-function rounded-lg py-2 shadow-md bg-gray-300 dark:bg-gray-700 hover:bg-gray-400 dark:hover:bg-gray-600 transition font-semibold"
+          data-value="Ans"
+          aria-label="Previous answer"
+          style="visibility: hidden;"
+        >
+          Ans
+        </button>
+        <button
+          class="btn btn-equal col-span-1 rounded-lg py-2 shadow-md bg-indigo-600 hover:bg-indigo-700 text-white font-bold transition tooltip"
+          data-action="calculate"
+          aria-label="Calculate result"
+          data-tooltip="Calculate result"
+        >
+          =
+        </button>
+
+        <!-- Row 6 -->
+        <button
+          class="btn btn-number rounded-lg py-2 shadow-md bg-gray-300 dark:bg-gray-700 hover:bg-gray-400 dark:hover:bg-gray-600 transition font-semibold tooltip"
+          data-value="1"
+          aria-label="Number 1"
+          data-tooltip="Number 1"
+        >
+          1
+        </button>
+        <button
+          class="btn btn-number rounded-lg py-2 shadow-md bg-gray-300 dark:bg-gray-700 hover:bg-gray-400 dark:hover:bg-gray-600 transition font-semibold tooltip"
+          data-value="2"
+          aria-label="Number 2"
+          data-tooltip="Number 2"
+        >
+          2
+        </button>
+        <button
+          class="btn btn-number rounded-lg py-2 shadow-md bg-gray-300 dark:bg-gray-700 hover:bg-gray-400 dark:hover:bg-gray-600 transition font-semibold tooltip"
+          data-value="3"
+          aria-label="Number 3"
+          data-tooltip="Number 3"
+        >
+          3
+        </button>
+        <button
+          class="btn btn-function rounded-lg py-2 shadow-md bg-gray-300 dark:bg-gray-700 hover:bg-gray-400 dark:hover:bg-gray-600 transition font-semibold"
+          data-value="Ans"
+          aria-label="Previous answer"
+          style="visibility: hidden;"
+        >
+          Ans
+        </button>
+        <button
+          class="btn btn-function rounded-lg py-2 shadow-md bg-gray-300 dark:bg-gray-700 hover:bg-gray-400 dark:hover:bg-gray-600 transition font-semibold"
+          data-value="Ans"
+          aria-label="Previous answer"
+          style="visibility: hidden;"
+        >
+          Ans
+        </button>
+        <button
+          class="btn btn-function rounded-lg py-2 shadow-md bg-gray-300 dark:bg-gray-700 hover:bg-gray-400 dark:hover:bg-gray-600 transition font-semibold"
+          data-value="Ans"
+          aria-label="Previous answer"
+          style="visibility: hidden;"
+        >
+          Ans
+        </button>
+
+        <!-- Row 7 -->
+        <button
+          class="btn btn-number col-span-2 rounded-lg py-2 shadow-md bg-gray-300 dark:bg-gray-700 hover:bg-gray-400 dark:hover:bg-gray-600 transition font-semibold tooltip"
+          data-value="0"
+          aria-label="Number 0"
+          data-tooltip="Number 0"
+        >
+          0
+        </button>
+        <button
+          class="btn btn-number rounded-lg py-2 shadow-md bg-gray-300 dark:bg-gray-700 hover:bg-gray-400 dark:hover:bg-gray-600 transition font-semibold tooltip"
+          data-value="."
+          aria-label="Decimal point"
+          data-tooltip="Decimal point"
+        >
+          .
+        </button>
+        <button
+          class="btn btn-function rounded-lg py-2 shadow-md bg-gray-300 dark:bg-gray-700 hover:bg-gray-400 dark:hover:bg-gray-600 transition font-semibold"
+          data-value="Ans"
+          aria-label="Previous answer"
+          style="visibility: hidden;"
+        >
+          Ans
+        </button>
+        <button
+          class="btn btn-function rounded-lg py-2 shadow-md bg-gray-300 dark:bg-gray-700 hover:bg-gray-400 dark:hover:bg-gray-600 transition font-semibold"
+          data-value="Ans"
+          aria-label="Previous answer"
+          style="visibility: hidden;"
+        >
+          Ans
+        </button>
+        <button
+          class="btn btn-function rounded-lg py-2 shadow-md bg-gray-300 dark:bg-gray-700 hover:bg-gray-400 dark:hover:bg-gray-600 transition font-semibold"
+          data-value="Ans"
+          aria-label="Previous answer"
+          style="visibility: hidden;"
+        >
+          Ans
+        </button>
+      </div>
+
+      <div class="mt-6 max-h-32 overflow-y-auto history-scroll bg-gray-50 dark:bg-gray-900 rounded-lg p-3 text-sm text-gray-700 dark:text-gray-300 font-mono">
+        <h2 class="font-semibold mb-2 flex justify-between items-center">
+          History
+          <button id="clearHistory" class="text-xs text-red-600 dark:text-red-400 hover:underline focus:outline-none" aria-label="Clear history" title="Clear history">
+            Clear
+          </button>
+        </h2>
+        <ul id="historyList" class="space-y-1" role="list"></ul>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (() => {
+      const display = document.getElementById('display');
+      const result = document.getElementById('result');
+      const buttons = document.querySelectorAll('.btn');
+      const historyList = document.getElementById('historyList');
+      const themeToggle = document.getElementById('themeToggle');
+      const clearHistoryBtn = document.getElementById('clearHistory');
+      let expression = '';
+      let lastAnswer = null;
+
+      // Safe math functions for evaluation
+      const mathFunctions = {
+        sin: (x) => Math.sin(x),
+        cos: (x) => Math.cos(x),
+        tan: (x) => Math.tan(x),
+        log10: (x) => Math.log10(x),
+        ln: (x) => Math.log(x),
+        sqrt: (x) => Math.sqrt(x),
+        abs: (x) => Math.abs(x),
+        exp: (x) => Math.exp(x),
+        pi: Math.PI,
+        e: Math.E,
+      };
+
+      // Replace power operator ^ with Math.pow
+      function parseExpression(expr) {
+        expr = expr.replace(/\bpi\b/g, 'Math.PI');
+        expr = expr.replace(/\be\b/g, 'Math.E');
+        expr = expr.replace(/\bAns\b/g, lastAnswer !== null ? lastAnswer : '0');
+
+        expr = expr.replace(/\bsin\(/g, 'Math.sin(');
+        expr = expr.replace(/\bcos\(/g, 'Math.cos(');
+        expr = expr.replace(/\btan\(/g, 'Math.tan(');
+        expr = expr.replace(/\blog10\(/g, 'Math.log10(');
+        expr = expr.replace(/\bln\(/g, 'Math.log(');
+        expr = expr.replace(/\bsqrt\(/g, 'Math.sqrt(');
+        expr = expr.replace(/\babs\(/g, 'Math.abs(');
+        expr = expr.replace(/\bexp\(/g, 'Math.exp(');
+
+        while (expr.includes('^')) {
+          expr = expr.replace(
+            /([^\s\+\-\*\/\(\)]+|\([^\(\)]+\))\^([^\s\+\-\*\/\(\)]+|\([^\(\)]+\))/,
+            'Math.pow($1,$2)'
+          );
+        }
+
+        return expr;
+      }
+
+      function safeEval(expr) {
+        try {
+          const func = new Function('return ' + expr);
+          return func();
+        } catch {
+          return null;
+        }
+      }
+
+      function updateDisplay() {
+        display.textContent = expression || '0';
+        result.textContent = '';
+      }
+
+      function addToExpression(value) {
+        if (expression === '0' && value !== '.') {
+          expression = value;
+        } else {
+          expression += value;
+        }
+        updateDisplay();
+      }
+
+      function clearAll() {
+        expression = '';
+        result.textContent = '';
+        updateDisplay();
+      }
+
+      function backspace() {
+        if (expression.length > 0) {
+          expression = expression.slice(0, -1);
+          updateDisplay();
+        }
+      }
+
+      function calculate() {
+        if (!expression) return;
+        const parsed = parseExpression(expression);
+        const evalResult = safeEval(parsed);
+        if (evalResult === null || evalResult === undefined || Number.isNaN(evalResult)) {
+          result.textContent = 'Error';
+          return;
+        }
+        const roundedResult =
+          Math.round((evalResult + Number.EPSILON) * 1e12) / 1e12;
+        result.textContent = '= ' + roundedResult;
+        lastAnswer = roundedResult;
+        addHistory(expression, roundedResult);
+        expression = roundedResult.toString();
+        updateDisplay();
+      }
+
+      function addHistory(expr, res) {
+        const li = document.createElement('li');
+        li.className =
+          'flex justify-between border-b border-gray-300 dark:border-gray-700 py-0.5 cursor-pointer hover:bg-gray-200 dark:hover:bg-gray-700 rounded px-1';
+        li.tabIndex = 0;
+        li.setAttribute('aria-label', `History item: ${expr} equals ${res}`);
+        li.textContent = expr + ' = ' + res;
+        li.addEventListener('click', () => {
+          expression = res.toString();
+          updateDisplay();
+          result.textContent = '';
+        });
+        li.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            li.click();
+          }
+        });
+        historyList.prepend(li);
+        if (historyList.children.length > 20) {
+          historyList.removeChild(historyList.lastChild);
+        }
+      }
+
+      function clearHistory() {
+        historyList.innerHTML = '';
+      }
+
+      buttons.forEach((btn) => {
+        btn.addEventListener('click', () => {
+          btn.classList.add('btn-press');
+          setTimeout(() => btn.classList.remove('btn-press'), 150);
+
+          const val = btn.getAttribute('data-value');
+          const action = btn.getAttribute('data-action');
+
+          if (action === 'clear') {
+            clearAll();
+            return;
+          }
+          if (action === 'backspace') {
+            backspace();
+            return;
+          }
+          if (action === 'calculate') {
+            calculate();
+            return;
+          }
+          if (val) {
+            if (val === '.') {
+              const parts = expression.split(/[\+\-\*\/\^\(\)]/);
+              const lastPart = parts[parts.length - 1];
+              if (lastPart.includes('.')) {
+                return;
+              }
+            }
+            addToExpression(val);
+          }
+        });
+      });
+
+      window.addEventListener('keydown', (e) => {
+        if (
+          (e.key >= '0' && e.key <= '9') ||
+          ['+', '-', '*', '/', '(', ')', '.', '^'].includes(e.key)
+        ) {
+          e.preventDefault();
+          addToExpression(e.key);
+        } else if (e.key === 'Enter' || e.key === '=') {
+          e.preventDefault();
+          calculate();
+        } else if (e.key === 'Backspace') {
+          e.preventDefault();
+          backspace();
+        } else if (e.key.toLowerCase() === 'c') {
+          e.preventDefault();
+          clearAll();
+        }
+      });
+
+      function setTheme(dark) {
+        if (dark) {
+          document.documentElement.classList.add('dark');
+          themeToggle.innerHTML = '<i class="fas fa-moon"></i>';
+          localStorage.setItem('theme', 'dark');
+        } else {
+          document.documentElement.classList.remove('dark');
+          themeToggle.innerHTML = '<i class="fas fa-sun"></i>';
+          localStorage.setItem('theme', 'light');
+        }
+      }
+
+      themeToggle.addEventListener('click', () => {
+        const isDark = document.documentElement.classList.contains('dark');
+        setTheme(!isDark);
+      });
+
+      clearHistoryBtn.addEventListener('click', () => {
+        clearHistory();
+      });
+
+      (function initTheme() {
+        const saved = localStorage.getItem('theme');
+        if (saved === 'dark') {
+          setTheme(true);
+        } else if (saved === 'light') {
+          setTheme(false);
+        } else {
+          const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          setTheme(prefersDark);
+        }
+      })();
+
+      updateDisplay();
+    })();
+  </script>
+</body>
+</html>

@@ -1,0 +1,465 @@
+<html class="scroll-smooth" lang="en">
+ <head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1" name="viewport"/>
+  <title>
+   Todo &amp; Notes App with Theme and Note Subjects
+  </title>
+  <script src="https://cdn.tailwindcss.com">
+  </script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&amp;display=swap" rel="stylesheet"/>
+  <style>
+   body {
+      font-family: 'Inter', sans-serif;
+    }
+    /* Scrollbar for notes and todos */
+    .scrollbar-thin::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    .scrollbar-thin::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    .scrollbar-thin::-webkit-scrollbar-thumb {
+      background-color: #a0aec0;
+      border-radius: 3px;
+    }
+  </style>
+ </head>
+ <body class="bg-gradient-to-br from-indigo-50 via-white to-indigo-50 min-h-screen flex flex-col transition-colors duration-500" data-theme="light">
+  <header class="bg-indigo-700 text-white shadow-md sticky top-0 z-30">
+   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between h-16">
+    <div class="flex items-center space-x-3">
+     <img alt="Logo with letters T and N in white on indigo background" class="rounded-md" height="40" src="https://storage.googleapis.com/a1aa/image/11631b66-a764-4010-1027-af189641d144.jpg" width="40"/>
+     <h1 class="text-xl font-semibold tracking-wide select-none">
+      Todo &amp; Notes
+     </h1>
+    </div>
+    <nav class="hidden md:flex space-x-6 font-medium text-indigo-200">
+     <button aria-controls="todo-section" aria-selected="true" class="tab-btn border-b-2 border-transparent hover:border-white pb-1 transition-colors duration-300 focus:outline-none" id="tab-todo" role="tab" tabindex="0">
+      Todo
+     </button>
+     <button aria-controls="notes-section" aria-selected="false" class="tab-btn border-b-2 border-transparent hover:border-white pb-1 transition-colors duration-300 focus:outline-none" id="tab-notes" role="tab" tabindex="-1">
+      Notes
+     </button>
+    </nav>
+    <div class="flex items-center space-x-4">
+     <button aria-label="Toggle theme" class="focus:outline-none focus:ring-2 focus:ring-white rounded p-1" id="theme-toggle" title="Toggle light/dark theme">
+      <i class="fas fa-sun text-yellow-400 text-xl" id="theme-icon">
+      </i>
+     </button>
+     <button aria-label="Open menu" class="md:hidden focus:outline-none" id="mobile-menu-btn">
+      <i class="fas fa-bars text-2xl">
+      </i>
+     </button>
+    </div>
+   </div>
+   <nav class="md:hidden bg-indigo-600 text-indigo-100 hidden" id="mobile-menu">
+    <button aria-controls="todo-section" aria-selected="true" class="w-full text-left px-4 py-3 border-b border-indigo-500 font-semibold focus:outline-none" id="mobile-tab-todo" role="tab" tabindex="0">
+     Todo
+    </button>
+    <button aria-controls="notes-section" aria-selected="false" class="w-full text-left px-4 py-3 border-b border-indigo-500 font-semibold focus:outline-none" id="mobile-tab-notes" role="tab" tabindex="-1">
+     Notes
+    </button>
+   </nav>
+  </header>
+  <main class="flex-grow max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full">
+   <section aria-labelledby="tab-todo" class="tab-content" id="todo-section" role="tabpanel" tabindex="0">
+    <h2 class="text-3xl font-bold text-indigo-700 mb-6 select-none flex items-center space-x-3">
+     <i class="fas fa-check-circle text-indigo-500">
+     </i>
+     <span>
+      Todo List
+     </span>
+    </h2>
+    <form class="flex flex-col sm:flex-row gap-4 mb-6" id="todo-form">
+     <input aria-label="Add new todo task" class="flex-grow rounded-md border border-indigo-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-400 px-4 py-2 text-gray-700 placeholder-gray-400 transition" id="todo-input" placeholder="Add a new task..." required="" type="text"/>
+     <button aria-label="Add task" class="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold rounded-md px-6 py-2 transition focus:outline-none focus:ring-2 focus:ring-indigo-400" type="submit">
+      Add Task
+     </button>
+    </form>
+    <ul aria-live="polite" aria-relevant="additions removals" class="space-y-3 max-h-[400px] overflow-y-auto scrollbar-thin" id="todo-list">
+    </ul>
+    <div class="mt-6 flex justify-between items-center text-indigo-600 font-semibold select-none">
+     <span id="todo-count">
+      0 tasks left
+     </span>
+     <button aria-label="Clear completed tasks" class="text-sm hover:underline focus:outline-none focus:ring-2 focus:ring-indigo-400 rounded px-2 py-1" id="clear-completed">
+      Clear Completed
+     </button>
+    </div>
+   </section>
+   <section aria-labelledby="tab-notes" class="tab-content hidden" id="notes-section" role="tabpanel" tabindex="0">
+    <h2 class="text-3xl font-bold text-indigo-700 mb-6 select-none flex items-center space-x-3">
+     <i class="fas fa-sticky-note text-indigo-500">
+     </i>
+     <span>
+      Notes
+     </span>
+    </h2>
+    <form class="flex flex-col sm:flex-row gap-4 mb-6" id="note-form">
+     <input aria-label="Note title" class="rounded-md border border-indigo-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-400 px-4 py-2 text-gray-700 placeholder-gray-400 transition flex-grow" id="note-title" placeholder="Note title..." required="" type="text"/>
+     <input aria-label="Note subject" class="rounded-md border border-indigo-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-400 px-4 py-2 text-gray-700 placeholder-gray-400 transition w-48 max-w-full" id="note-subject" placeholder="Subject (e.g. Work, Personal)" type="text"/>
+     <button aria-label="Add note" class="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold rounded-md px-6 py-2 transition focus:outline-none focus:ring-2 focus:ring-indigo-400" type="submit">
+      Add Note
+     </button>
+    </form>
+    <div aria-live="polite" aria-relevant="additions removals" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 max-h-[480px] overflow-y-auto scrollbar-thin" id="notes-container">
+    </div>
+   </section>
+  </main>
+  <footer class="bg-indigo-700 text-indigo-200 text-center py-4 select-none">
+   <p>
+    © 2025 Todo &amp; Notes App. Crafted with
+    <i class="fas fa-heart text-red-500">
+    </i>
+    by Sanu...
+   </p>
+  </footer>
+  <script>
+   (() => {
+      // Elements
+      const todoForm = document.getElementById('todo-form');
+      const todoInput = document.getElementById('todo-input');
+      const todoList = document.getElementById('todo-list');
+      const todoCount = document.getElementById('todo-count');
+      const clearCompletedBtn = document.getElementById('clear-completed');
+
+      const noteForm = document.getElementById('note-form');
+      const noteTitleInput = document.getElementById('note-title');
+      const noteSubjectInput = document.getElementById('note-subject');
+      const notesContainer = document.getElementById('notes-container');
+
+      const tabTodo = document.getElementById('tab-todo');
+      const tabNotes = document.getElementById('tab-notes');
+      const mobileTabTodo = document.getElementById('mobile-tab-todo');
+      const mobileTabNotes = document.getElementById('mobile-tab-notes');
+      const todoSection = document.getElementById('todo-section');
+      const notesSection = document.getElementById('notes-section');
+      const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+      const mobileMenu = document.getElementById('mobile-menu');
+
+      const themeToggleBtn = document.getElementById('theme-toggle');
+      const themeIcon = document.getElementById('theme-icon');
+      const body = document.body;
+
+      // Data storage keys
+      const TODO_STORAGE_KEY = 'todo-notes-app-todos';
+      const NOTES_STORAGE_KEY = 'todo-notes-app-notes';
+      const THEME_STORAGE_KEY = 'todo-notes-app-theme';
+
+      // Load from localStorage or initialize empty arrays
+      let todos = JSON.parse(localStorage.getItem(TODO_STORAGE_KEY)) || [];
+      let notes = JSON.parse(localStorage.getItem(NOTES_STORAGE_KEY)) || [];
+      let currentTheme = localStorage.getItem(THEME_STORAGE_KEY) || 'light';
+
+      // Utility: Save todos and notes to localStorage
+      function saveTodos() {
+        localStorage.setItem(TODO_STORAGE_KEY, JSON.stringify(todos));
+      }
+      function saveNotes() {
+        localStorage.setItem(NOTES_STORAGE_KEY, JSON.stringify(notes));
+      }
+      function saveTheme(theme) {
+        localStorage.setItem(THEME_STORAGE_KEY, theme);
+      }
+
+      // Apply theme
+      function applyTheme(theme) {
+        if (theme === 'dark') {
+          body.classList.remove('bg-gradient-to-br', 'from-indigo-50', 'via-white', 'to-indigo-50');
+          body.classList.add('bg-gray-900', 'text-gray-200');
+          // Header and footer dark
+          document.querySelector('header').classList.replace('bg-indigo-700', 'bg-gray-800');
+          document.querySelector('footer').classList.replace('bg-indigo-700', 'bg-gray-800');
+          // Change text colors in header nav
+          document.querySelectorAll('nav.md\\:flex > button, nav.md\\:flex > .tab-btn').forEach(btn => {
+            btn.classList.remove('text-indigo-200');
+            btn.classList.add('text-gray-300');
+          });
+          // Mobile menu background
+          mobileMenu.classList.replace('bg-indigo-600', 'bg-gray-700');
+          mobileMenu.classList.replace('text-indigo-100', 'text-gray-300');
+          // Update theme icon
+          themeIcon.classList.remove('fa-sun', 'text-yellow-400');
+          themeIcon.classList.add('fa-moon', 'text-yellow-300');
+        } else {
+          body.classList.add('bg-gradient-to-br', 'from-indigo-50', 'via-white', 'to-indigo-50');
+          body.classList.remove('bg-gray-900', 'text-gray-200');
+          document.querySelector('header').classList.replace('bg-gray-800', 'bg-indigo-700');
+          document.querySelector('footer').classList.replace('bg-gray-800', 'bg-indigo-700');
+          document.querySelectorAll('nav.md\\:flex > button, nav.md\\:flex > .tab-btn').forEach(btn => {
+            btn.classList.add('text-indigo-200');
+            btn.classList.remove('text-gray-300');
+          });
+          mobileMenu.classList.replace('bg-gray-700', 'bg-indigo-600');
+          mobileMenu.classList.replace('text-gray-300', 'text-indigo-100');
+          themeIcon.classList.remove('fa-moon', 'text-yellow-300');
+          themeIcon.classList.add('fa-sun', 'text-yellow-400');
+        }
+        body.setAttribute('data-theme', theme);
+      }
+
+      // Render todos
+      function renderTodos() {
+        todoList.innerHTML = '';
+        if (todos.length === 0) {
+          const emptyMsg = document.createElement('li');
+          emptyMsg.className = 'text-center text-gray-400 italic select-none';
+          emptyMsg.textContent = 'No tasks yet. Add one above!';
+          todoList.appendChild(emptyMsg);
+          todoCount.textContent = '0 tasks left';
+          return;
+        }
+
+        todos.forEach((todo) => {
+          const li = document.createElement('li');
+          li.className = 'flex items-center justify-between bg-white rounded-md shadow-sm px-4 py-3 transition hover:shadow-md dark:bg-gray-800';
+
+          // Left side: checkbox and text
+          const leftDiv = document.createElement('div');
+          leftDiv.className = 'flex items-center space-x-3';
+
+          const checkbox = document.createElement('input');
+          checkbox.type = 'checkbox';
+          checkbox.checked = todo.completed;
+          checkbox.className = 'w-5 h-5 text-indigo-600 rounded focus:ring-indigo-500 cursor-pointer dark:bg-gray-700 dark:ring-indigo-400 dark:focus:ring-indigo-400';
+          checkbox.setAttribute('aria-label', `Mark task "${todo.text}" as completed`);
+
+          const textSpan = document.createElement('span');
+          textSpan.textContent = todo.text;
+          textSpan.className = todo.completed ? 'line-through text-gray-400 select-text dark:text-gray-500' : 'select-text text-gray-800 dark:text-gray-200';
+
+          leftDiv.appendChild(checkbox);
+          leftDiv.appendChild(textSpan);
+
+          // Right side: delete button
+          const deleteBtn = document.createElement('button');
+          deleteBtn.className = 'text-red-500 hover:text-red-700 focus:outline-none focus:ring-2 focus:ring-red-400 rounded p-1 dark:hover:text-red-400';
+          deleteBtn.setAttribute('aria-label', `Delete task "${todo.text}"`);
+          deleteBtn.innerHTML = '<i class="fas fa-trash-alt"></i>';
+
+          li.appendChild(leftDiv);
+          li.appendChild(deleteBtn);
+
+          // Events
+          checkbox.addEventListener('change', () => {
+            todo.completed = checkbox.checked;
+            saveTodos();
+            renderTodos();
+          });
+
+          deleteBtn.addEventListener('click', () => {
+            todos = todos.filter((t) => t.id !== todo.id);
+            saveTodos();
+            renderTodos();
+          });
+
+          todoList.appendChild(li);
+        });
+
+        const remaining = todos.filter((t) => !t.completed).length;
+        todoCount.textContent = `${remaining} task${remaining !== 1 ? 's' : ''} left`;
+      }
+
+      // Render notes
+      function renderNotes() {
+        notesContainer.innerHTML = '';
+        if (notes.length === 0) {
+          const emptyMsg = document.createElement('p');
+          emptyMsg.className = 'text-center text-gray-400 italic col-span-full select-none dark:text-gray-500';
+          emptyMsg.textContent = 'No notes yet. Add one above!';
+          notesContainer.appendChild(emptyMsg);
+          return;
+        }
+
+        notes.forEach((note) => {
+          const noteCard = document.createElement('article');
+          noteCard.className = 'bg-white rounded-lg shadow-md p-5 flex flex-col justify-between transition hover:shadow-lg dark:bg-gray-800';
+
+          const title = document.createElement('h3');
+          title.className = 'text-indigo-700 font-semibold text-lg mb-1 break-words select-text dark:text-indigo-400';
+          title.textContent = note.title;
+
+          const subject = document.createElement('p');
+          subject.className = 'text-sm text-indigo-500 mb-3 italic select-text dark:text-indigo-300';
+          subject.textContent = note.subject ? `Subject: ${note.subject}` : 'Subject: (None)';
+
+          const createdAt = document.createElement('time');
+          createdAt.className = 'text-xs text-indigo-400 mb-4 select-none dark:text-indigo-300';
+          createdAt.dateTime = note.createdAt;
+          createdAt.textContent = new Date(note.createdAt).toLocaleString();
+
+          const deleteBtn = document.createElement('button');
+          deleteBtn.className = 'self-end text-red-500 hover:text-red-700 focus:outline-none focus:ring-2 focus:ring-red-400 rounded p-1 dark:hover:text-red-400';
+          deleteBtn.setAttribute('aria-label', `Delete note titled "${note.title}"`);
+          deleteBtn.innerHTML = '<i class="fas fa-trash-alt"></i>';
+
+          deleteBtn.addEventListener('click', () => {
+            notes = notes.filter((n) => n.id !== note.id);
+            saveNotes();
+            renderNotes();
+          });
+
+          noteCard.appendChild(title);
+          noteCard.appendChild(subject);
+          noteCard.appendChild(createdAt);
+          noteCard.appendChild(deleteBtn);
+
+          notesContainer.appendChild(noteCard);
+        });
+      }
+
+      // Add todo
+      todoForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const text = todoInput.value.trim();
+        if (text.length === 0) return;
+        todos.push({
+          id: Date.now().toString(),
+          text,
+          completed: false,
+        });
+        saveTodos();
+        renderTodos();
+        todoInput.value = '';
+        todoInput.focus();
+      });
+
+      // Add note
+      noteForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const title = noteTitleInput.value.trim();
+        const subject = noteSubjectInput.value.trim();
+        if (title.length === 0) return;
+        notes.push({
+          id: Date.now().toString(),
+          title,
+          subject,
+          createdAt: new Date().toISOString(),
+        });
+        saveNotes();
+        renderNotes();
+        noteTitleInput.value = '';
+        noteSubjectInput.value = '';
+        noteTitleInput.focus();
+      });
+
+      // Clear completed todos
+      clearCompletedBtn.addEventListener('click', () => {
+        todos = todos.filter((t) => !t.completed);
+        saveTodos();
+        renderTodos();
+      });
+
+      // Tabs switching logic
+      function switchTab(tab) {
+        if (tab === 'todo') {
+          todoSection.classList.remove('hidden');
+          notesSection.classList.add('hidden');
+
+          tabTodo.classList.add('border-white');
+          tabTodo.setAttribute('aria-selected', 'true');
+          tabTodo.tabIndex = 0;
+
+          tabNotes.classList.remove('border-white');
+          tabNotes.setAttribute('aria-selected', 'false');
+          tabNotes.tabIndex = -1;
+
+          mobileTabTodo.classList.add('bg-indigo-700', 'text-white');
+          mobileTabTodo.setAttribute('aria-selected', 'true');
+          mobileTabTodo.tabIndex = 0;
+
+          mobileTabNotes.classList.remove('bg-indigo-700', 'text-white');
+          mobileTabNotes.setAttribute('aria-selected', 'false');
+          mobileTabNotes.tabIndex = -1;
+        } else {
+          notesSection.classList.remove('hidden');
+          todoSection.classList.add('hidden');
+
+          tabNotes.classList.add('border-white');
+          tabNotes.setAttribute('aria-selected', 'true');
+          tabNotes.tabIndex = 0;
+
+          tabTodo.classList.remove('border-white');
+          tabTodo.setAttribute('aria-selected', 'false');
+          tabTodo.tabIndex = -1;
+
+          mobileTabNotes.classList.add('bg-indigo-700', 'text-white');
+          mobileTabNotes.setAttribute('aria-selected', 'true');
+          mobileTabNotes.tabIndex = 0;
+
+          mobileTabTodo.classList.remove('bg-indigo-700', 'text-white');
+          mobileTabTodo.setAttribute('aria-selected', 'false');
+          mobileTabTodo.tabIndex = -1;
+        }
+      }
+
+      tabTodo.addEventListener('click', () => switchTab('todo'));
+      tabNotes.addEventListener('click', () => switchTab('notes'));
+      mobileTabTodo.addEventListener('click', () => {
+        switchTab('todo');
+        mobileMenu.classList.add('hidden');
+      });
+      mobileTabNotes.addEventListener('click', () => {
+        switchTab('notes');
+        mobileMenu.classList.add('hidden');
+      });
+
+      // Mobile menu toggle
+      mobileMenuBtn.addEventListener('click', () => {
+        mobileMenu.classList.toggle('hidden');
+      });
+
+      // Keyboard navigation for tabs (desktop)
+      const tabButtons = [tabTodo, tabNotes];
+      tabButtons.forEach((btn, idx) => {
+        btn.addEventListener('keydown', (e) => {
+          if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') {
+            e.preventDefault();
+            let newIndex;
+            if (e.key === 'ArrowRight') {
+              newIndex = (idx + 1) % tabButtons.length;
+            } else {
+              newIndex = (idx - 1 + tabButtons.length) % tabButtons.length;
+            }
+            tabButtons[newIndex].focus();
+            switchTab(newIndex === 0 ? 'todo' : 'notes');
+          }
+        });
+      });
+
+      // Keyboard navigation for tabs (mobile)
+      const mobileTabButtons = [mobileTabTodo, mobileTabNotes];
+      mobileTabButtons.forEach((btn, idx) => {
+        btn.addEventListener('keydown', (e) => {
+          if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+            e.preventDefault();
+            let newIndex;
+            if (e.key === 'ArrowDown') {
+              newIndex = (idx + 1) % mobileTabButtons.length;
+            } else {
+              newIndex = (idx - 1 + mobileTabButtons.length) % mobileTabButtons.length;
+            }
+            mobileTabButtons[newIndex].focus();
+          }
+        });
+      });
+
+      // Theme toggle
+      themeToggleBtn.addEventListener('click', () => {
+        currentTheme = currentTheme === 'light' ? 'dark' : 'light';
+        applyTheme(currentTheme);
+        saveTheme(currentTheme);
+      });
+
+      // Initial render
+      renderTodos();
+      renderNotes();
+      switchTab('todo');
+      applyTheme(currentTheme);
+    })();
+  </script>
+ </body>
+</html>
